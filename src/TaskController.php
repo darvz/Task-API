@@ -2,7 +2,8 @@
 
 class TaskController
 {
-	public function __construct(private TaskGateway $gateway)
+	public function __construct(private TaskGateway $gateway,
+								private int $userId)
 	{
 	}
 
@@ -13,7 +14,7 @@ class TaskController
 		{
 			switch ($method) {
 				case "GET":
-					echo json_encode($this->gateway->GetAll());
+					$this->ProcessMethod($method, $id);
 				break;
 				case "POST":
 					$this->ProcessMethod($method, $id);
@@ -83,6 +84,22 @@ class TaskController
 				$this->ResponseMethodSuccess();
 			}
 		}
+		if ($method == "GET") 
+		{
+			if ($this->userId > 0) 
+			{
+				echo json_encode($this->gateway->GetByUserId($this->userId));
+			}
+			else 
+			{
+				echo json_encode($this->gateway->GetAll());
+			}
+		}
+	}
+
+	private function ProcessUserMethod(string $method)
+	{
+
 	}
 
 	/*ERROR METHOD*/

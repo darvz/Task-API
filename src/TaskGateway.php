@@ -44,6 +44,26 @@ class TaskGateway
 		return $data;
 	}
 
+	public function GetByUserId(int $userId): array
+	{
+		$sql = "SELECT * 
+				FROM task 
+				WHERE userId = :id";
+
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bindValue("id", $userId, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$data = [];
+
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$row['IsComplete'] = (bool) $row['IsComplete'];
+			$data[] = $row;
+		}
+
+		return $data;
+	}
+
 	public function Insert(array $data) : string
 	{
 		$sql = "INSERT INTO task (name, priority, iscomplete)
@@ -139,4 +159,4 @@ class TaskGateway
 
 		return $stmt->rowCount();
 	}
-}
+} 

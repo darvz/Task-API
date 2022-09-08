@@ -1,6 +1,9 @@
 <?php 
 
-class DbConnect {
+class DbConnect 
+{
+
+	private ?PDO $conn = null;
 
 	public function __construct(
 		private string $host,
@@ -13,13 +16,18 @@ class DbConnect {
 
 	public function GetConnection(): PDO
 	{
-		$dsn = "mysql:host={$this->host};dbname={$this->name};charset=utf8";
+		if ($this->conn === null) 
+		{
+			$dsn = "mysql:host={$this->host};dbname={$this->name};charset=utf8";
 
-		return new PDO($dsn, $this->username, $this->password, [
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-			PDO::ATTR_EMULATE_PREPARES => false,
-			PDO::ATTR_STRINGIFY_FETCHES => false
-		]);
+			$this->conn = new PDO($dsn, $this->username, $this->password, [
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_EMULATE_PREPARES => false,
+				PDO::ATTR_STRINGIFY_FETCHES => false
+			]);	
+		}
+
+		return $this->conn;
 	}
 }
 
